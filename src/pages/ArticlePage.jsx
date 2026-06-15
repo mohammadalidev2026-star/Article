@@ -23,7 +23,11 @@ export default function ArticlePage() {
         </span>
       </div>
       <div className="flex items-center justify-center">
-        <img src={article.imageUrl} alt={article.title} className="size-96" />
+        <img
+          src={article.imageUrl}
+          alt={article.title}
+          className="size-96 rounded-sm"
+        />
       </div>
       <h1 className="text-3xl text-center font-bold my-6">{article.title}</h1>
 

@@ -8,7 +8,6 @@ export default function Article({ article }) {
       <div className="h-48 sm:h-56 md:h-64 overflow-hidden">
         <img
           src={article.imageUrl}
-          alt={article.title}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110 cursor-pointer"
         />
       </div>
