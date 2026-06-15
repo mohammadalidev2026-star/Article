@@ -28,14 +28,13 @@ export default function Home() {
     >
       لیست مقالات
     </NavLink>,
-    "مقالات جدید",
   ];
 
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/articles")
+      .get("http://localhost:8000/article")
       .then((result) => {
         setArticles(result.data);
       })
@@ -51,12 +50,14 @@ export default function Home() {
         <h2 className="text-center sm:text-right px-4 sm:px-10 md:px-20 py-4 text-sm font-medium">
           : لیست مقالات
         </h2>
-        <div className="flex flex-wrap justify-center gap-4 px-4 sm:px-10 md:px-20 min-h-180">
-          {articles.map((article) => (
-            <NavLink to={`/articles/${article.id}`}>
-              <Article key={article.id} article={article} />
-            </NavLink>
-          ))}
+        <div className="flex flex-wrap justify-center gap-3 px-4 sm:px-10 min-h-180">
+          <div className="flex flex-wrap justify-center gap-3 px-4 sm:px-10 min-h-180">
+            {articles.map((article) => (
+              <NavLink key={article.id} to={`/articles/${article.id}`}>
+                <Article article={article} />
+              </NavLink>
+            ))}
+          </div>
         </div>
       </div>
 

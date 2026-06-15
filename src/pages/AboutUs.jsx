@@ -8,10 +8,10 @@ import {
   TileLayer,
   Marker,
   Popup,
+  Tooltip,
   useMap,
   useMapEvents,
 } from "react-leaflet";
-
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -49,21 +49,25 @@ function SearchBox({ map }) {
 
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
-          text,
+        `https://photon.komoot.io/api/?q=${encodeURIComponent(
+          text + " Herat Afghanistan",
         )}`,
       );
 
       const data = await res.json();
 
-      if (data.length > 0) {
-        const place = data[0];
+      if (data.features.length > 0) {
+        const place = data.features[0];
 
-        map.flyTo([parseFloat(place.lat), parseFloat(place.lon)], 10, {
-          duration: 1.5,
-        });
+        map.flyTo(
+          [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+          18,
+          {
+            duration: 1.5,
+          },
+        );
       } else {
-        alert("مکان پیدا نشد ");
+        alert("مکان پیدا نشد");
       }
     } catch (err) {
       console.log(err);
@@ -125,6 +129,10 @@ function SearchBox({ map }) {
 }
 
 function MapContent({ points, setPoints, setInfo, info }) {
+  const [placeNames, setPlaceNames] = React.useState({
+    start: "",
+    end: "",
+  });
   const [routeCoords, setRouteCoords] = React.useState([]);
   const map = useMap();
 
@@ -191,6 +199,10 @@ function MapContent({ points, setPoints, setInfo, info }) {
     setInfo(null);
     setPoints([]);
     setRouteCoords([]);
+    setPlaceNames({
+      start: "",
+      end: "",
+    });
   };
 
   const startTimer = () => {
@@ -227,7 +239,41 @@ function MapContent({ points, setPoints, setInfo, info }) {
 
     return () => clearTimeout(timerRef.current);
   }, [distanceKm]);
+  const getPlaceName = async (lat, lng) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=fa`,
+      );
+      const data = await res.json();
 
+      return (
+        data.address?.city ||
+        data.address?.town ||
+        data.address?.village ||
+        data.address?.county ||
+        data.address?.state ||
+        "مکان نامشخص"
+      );
+    } catch {
+      return "مکان نامشخص";
+    }
+  };
+  React.useEffect(() => {
+    if (points.length < 2) return;
+
+    const fetchPlaces = async () => {
+      const startName = await getPlaceName(points[0].lat, points[0].lng);
+
+      const endName = await getPlaceName(points[1].lat, points[1].lng);
+
+      setPlaceNames({
+        start: startName,
+        end: endName,
+      });
+    };
+
+    fetchPlaces();
+  }, [points]);
   React.useEffect(() => {
     if (points.length < 2) {
       setRouteCoords([]);
@@ -254,7 +300,7 @@ function MapContent({ points, setPoints, setInfo, info }) {
           setRouteCoords(coords);
         }
       } catch (err) {
-        console.log(err);
+        alert(err);
       }
     };
 
@@ -267,7 +313,9 @@ function MapContent({ points, setPoints, setInfo, info }) {
 
       {points.map((p, i) => (
         <Marker key={i} position={p}>
-          <Popup>{i === 0 ? "نقطه اول 📍" : "نقطه دوم 📍"}</Popup>
+          <Tooltip permanent direction="top" offset={[0, -10]}>
+            {i === 0 ? "📍 مبدا" : "🏁 مقصد"}
+          </Tooltip>
         </Marker>
       ))}
       {routeCoords.length > 0 && (
@@ -299,13 +347,17 @@ function MapContent({ points, setPoints, setInfo, info }) {
             fontWeight: "bold",
           }}
         >
+          📍 مبدا: {placeNames.start}
+          <br />
+          🏁 مقصد: {placeNames.end}
+          <hr className="my-2 border-gray-500" />
           📏 فاصله: {info.distance}
           <br />
           🚶‍♂️ پیاده: {info.walk}
           <br />
           🚴 دوچرخه: {info.bike}
           <br />
-          🚗 موتر: {info.car}
+          🚗 موتر: {info.car}{" "}
         </div>
       )}
     </>
@@ -337,7 +389,6 @@ export default function AboutUs() {
     >
       لیست مقالات
     </NavLink>,
-    "مقالات جدید",
   ];
 
   return (
@@ -357,13 +408,14 @@ export default function AboutUs() {
 
         <div className="h-130 w-full relative rounded-xl overflow-hidden shadow-lg">
           <MapContainer
-            center={[34.5553, 69.2075]}
-            zoom={6}
+            center={[34.3529, 62.204]}
+            zoom={13}
+            maxZoom={22}
             className="h-full w-full"
           >
             <TileLayer
-              url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap"
+              url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+              attribution="Google Maps"
             />
             <MapContent
               points={points}
