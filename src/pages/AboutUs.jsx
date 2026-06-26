@@ -355,9 +355,9 @@ function MapContent({ points, setPoints, setInfo, info }) {
           <br />
           🚶‍♂️ پیاده: {info.walk}
           <br />
-          🚴 دوچرخه: {info.bike}
+          🚴 موتور: {info.bike}
           <br />
-          🚗 موتر: {info.car}{" "}
+          🚗 موتر: {info.car}
         </div>
       )}
     </>
@@ -380,6 +380,16 @@ export default function AboutUs() {
       درباره
     </NavLink>,
     <NavLink
+      to="/CreateArticle"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-600"
+          : "text-black hover:text-blue-500 transition-colors"
+      }
+    >
+      ساخت مقاله
+    </NavLink>,
+    <NavLink
       to="/"
       className={({ isActive }) =>
         isActive
@@ -395,8 +405,8 @@ export default function AboutUs() {
     <>
       <Navbar items={pages} />
 
-      <div className="px-6 md:px-20 py-10 text-right">
-        <h1 className="text-3xl font-bold mb-6">درباره ما</h1>
+      <div className="px-6 md:px-20 py-6 text-right">
+        <h1 className="text-xl font-medium mb-6"> : درباره ما </h1>
 
         <p className="text-gray-600 leading-8 border p-6 rounded-xl shadow-sm">
           . ما یک تیم فعال در تولید مقالات آموزشی هستیم

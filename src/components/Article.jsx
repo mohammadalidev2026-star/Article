@@ -4,7 +4,7 @@ export default function Article({ article }) {
   if (!article) return null;
 
   return (
-    <div className="w-full h-83 sm:w-60 md:w-70 bg-[#eeeeee] shadow-md mb-4 rounded overflow-hidden">
+    <div className="w-full h-83 sm:w-60 md:w-73 bg-[#eeeeee] shadow-md mb-4 rounded overflow-hidden">
       <div className="h-48 sm:h-56 md:h-64 overflow-hidden">
         <img
           src={article.imageUrl}
