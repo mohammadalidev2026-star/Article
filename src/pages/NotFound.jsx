@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-blue-100 px-4">
+    <div className="min-h-screen flex items-center justify-center `bg-gradient-to-br `from-slate-100 via-white to-blue-100 px-4">
       <div className="text-center max-w-xl">
         <h1 className="text-[120px] sm:text-[170px] font-black text-blue-600 leading-none select-none">
           404
